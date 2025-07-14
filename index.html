@@ -3,31 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Narrative Visualization</title>
+  <title>China Electric Vehicle Sales Data</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
-    /* Add some basic styles */
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
-    .tooltip {
-      position: absolute;
-      background: #333;
-      color: #fff;
-      padding: 5px;
-      border-radius: 3px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s;
+    #visualization {
+      margin: 20px auto;
+    }
+    .controls {
+      margin: 20px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 0 5px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #e0e0e0;
+    }
+    button.active {
+      background-color: steelblue;
+      color: white;
+      font-weight: bold;
+    }
+    #sceneDescription {
+      font-size: 18px;
+      margin: 20px;
+    }
+    #hoverText {
+      font-style: italic;
+      font-size: 16px;
+      margin-bottom: 40px; /* Increased space between text and buttons */
+    }
+    .controls {
+      margin-top: 20px; /* Additional margin for buttons */
+    }
+    .slider-container {
+      text-align: center;
+      margin: 20px 0;
+      display: none; /* Hidden by default */
     }
   </style>
 </head>
 <body>
-  <h1>Interactive Narrative Visualization</h1>
-  <p>Explore the data below:</p>
+  <h1>China Electric Vehicle Sales Data</h1>
+  <p id="sceneDescription">
+    The electric vehicle (EV) market share in China is experiencing rapid and unprecedented growth, solidifying the nation's position as a global leader in EV adoption.
+  </p>
   <svg id="visualization" width="800" height="400"></svg>
-  <div class="tooltip"></div>
+  <div id="hoverText">Hover to see more details</div>
+  <div class="controls">
+    <button id="scene1Button">1</button>
+    <button id="scene2Button">2</button>
+    <button id="scene3Button">3</button>
+  </div>
+  <script src="scene1.js"></script>
+  <script src="scene2.js"></script>
+  <script src="scene3.js"></script>
+  <script>
+    // Scene descriptions
+    const sceneDescriptions = [
+      "The electric vehicle (EV) market share in China is experiencing rapid and unprecedented growth, solidifying the nation's position as a global leader in EV adoption.",
+      "Amid the rapid expansion of the EV market, Chinese automakers are capturing an increasingly larger share, asserting their dominance over foreign competitors.",
+      "Chinese automakers dominate the local EV market by leveraging technological innovation, competitive pricing, and a deep understanding of consumer preferences. Backed by strong R&D, government incentives, and a robust supply chain, they are outpacing international competitors and capturing a significant market share."
+    ];
 
-  <script src="script.js"></script>
+    // Scene Control Logic
+    let currentScene = 0; // Keep track of the current scene
+    const scenes = [scene1, scene2, scene3]; // Array of scene functions
+
+    // Function to update the active scene
+    function updateScene(sceneIndex) {
+      currentScene = sceneIndex; // Update the current scene
+      
+      // Call the scene function first (this creates the slider container for scene 3)
+      scenes[currentScene]();
+
+      // Then handle slider visibility
+      const sliderContainer = d3.select(".slider-container");
+      if (!sliderContainer.empty()) {
+        if (sceneIndex === 2) { // Scene 3 (index 2)
+          sliderContainer.style("display", "block");
+        } else {
+          sliderContainer.style("display", "none");
+        }
+      }
+
+      // Update the scene description
+      d3.select("#sceneDescription").text(sceneDescriptions[currentScene]);
+
+      // Update button styles to show the active scene
+      d3.selectAll("button").classed("active", false); // Reset all buttons
+      d3.select(`#scene${sceneIndex + 1}Button`).classed("active", true); // Highlight active button
+    }
+
+    // Attach event listeners to the scene buttons
+    d3.select("#scene1Button").on("click", () => updateScene(0));
+    d3.select("#scene2Button").on("click", () => updateScene(1));
+    d3.select("#scene3Button").on("click", () => updateScene(2));
+
+    // Initialize with the first scene
+    updateScene(0);
+  </script>
 </body>
 </html>
