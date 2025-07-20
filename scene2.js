@@ -299,6 +299,40 @@ function scene2() {
       }
     });
 
+    // Add specific annotation for Government Release of Foreign Ownership
+    const governmentReleaseDate = new Date(2018, 3, 17); // April 17, 2018
+    const governmentReleaseDataPoint = summarizedData.reduce((closest, current) => {
+      const eventTime = governmentReleaseDate.getTime();
+      const currentDiff = Math.abs(current.month.getTime() - eventTime);
+      const closestDiff = Math.abs(closest.month.getTime() - eventTime);
+      return currentDiff < closestDiff ? current : closest;
+    });
+
+    if (governmentReleaseDataPoint) {
+      // Add vertical line
+      svg
+        .append("line")
+        .attr("x1", x(governmentReleaseDate))
+        .attr("x2", x(governmentReleaseDate))
+        .attr("y1", margin.top)
+        .attr("y2", y((governmentReleaseDataPoint.China + governmentReleaseDataPoint.othersUnits) / 1e6))
+        .attr("stroke", "#004225")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "3,3")
+        .attr("opacity", 0.7);
+
+      // Add annotation label (left-aligned)
+      svg
+        .append("text")
+        .attr("x", x(governmentReleaseDate))
+        .attr("y", margin.top - 10)
+        .attr("text-anchor", "start")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .style("fill", "#004225")
+        .text("Government Release of Foreign Ownership");
+    }
+
     // Add legend (center-aligned with better spacing)
     const legend = svg
       .append("g")

@@ -227,5 +227,32 @@ function scene1() {
           });
       }
     });
+
+    // Add vertical annotation line for end of subsidy program
+    const subsidyEndDate = new Date(2022, 11, 31); // December 31, 2022
+
+    // Add vertical line
+    svg
+      .append("line")
+      .attr("x1", x(subsidyEndDate))
+      .attr("x2", x(subsidyEndDate))
+      .attr("y1", margin.top)
+      .attr("y2", height - margin.bottom)
+      .attr("stroke", "#333333")
+      .attr("stroke-width", 2)
+      .attr("stroke-dasharray", "5,5")
+      .attr("opacity", 0.8);
+
+    // Add label for the annotation line
+    svg
+      .append("text")
+      .attr("x", x(subsidyEndDate))
+      .attr("y", margin.top + 20)
+      .attr("fill", "#333333")
+      .style("text-anchor", "middle")
+      .style("font-size", "11px")
+      .style("font-weight", "bold")
+      .text("End of Government Subsidary");
+
   });
 }
